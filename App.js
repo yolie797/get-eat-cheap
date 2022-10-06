@@ -8,6 +8,7 @@ import {
   TextInput,
 } from 'react-native';
 import Search from './components/search';
+
 export default function App() {
   const [dataSource] = useState([])
   const [filtered, setFiltered] = useState(dataSource)
@@ -77,6 +78,7 @@ export default function App() {
           dataSource={filtered} />
       }
     </View>
+
   )
 }
 
