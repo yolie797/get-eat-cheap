@@ -8,9 +8,29 @@ import {
   TextInput,
 } from 'react-native';
 import Search from './components/search';
+import HomePage from './components/homePage'
+import WelcomePage from './components/WelcomePage';
+import Profile from './components/profile';
 
-export default function App() {
-  const [dataSource] = useState([])
+const App = () => {
+  return(
+    <View style={styles.container}>
+        <Profile/>
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "#1D2D44",
+  },
+})
+
+export default App;
+
+  /*const [dataSource] = useState('apple','banana','orange')
   const [filtered, setFiltered] = useState(dataSource)
   const [searching, setSearching] = useState(false)
   
@@ -28,11 +48,11 @@ export default function App() {
     else {
       setSearching(false)
       setFiltered(dataSource)
-    }
+    }*/
 
-  }
+  //}
   
-  return (
+  /*return (
     <View style={styles.container}>
 
       <TextInput
@@ -67,12 +87,12 @@ export default function App() {
           }
         </View>
 
-      </View>
+      </View>*/
 
       {/* your components can stay here like anything */}
       {/* and at the end of view */}
       {
-        searching &&
+       /* searching &&
         <Search
           onPress={() => setSearching(false)}
           dataSource={filtered} />
@@ -99,4 +119,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     paddingHorizontal: 10,
   },
-});
+});*/}

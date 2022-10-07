@@ -1,4 +1,4 @@
-import React from 'react';
+/*import React from 'react';
 import Swiper from 'react-native-swiper';
 
 
@@ -12,4 +12,4 @@ export default function App() {
         <CustomText>View 3</CustomText>
     </Swiper>
   );
-}
+}*/
