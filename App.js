@@ -15,7 +15,7 @@ import Profile from './components/profile';
 const App = () => {
   return(
     <View style={styles.container}>
-        <Profile/>
+        <WelcomePage/>
     </View>
   )
 }

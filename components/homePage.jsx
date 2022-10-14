@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TextInput } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon2 from 'react-native-vector-icons/AntDesign';
 import SelectList from 'react-native-dropdown-select-list'
 
 
@@ -8,27 +9,43 @@ const HomePage = () =>{
  
     return(
         <View style={styles.container}>
-            <View style={styles.navigation}>
-                <View style={styles.theIcons}>
-                    <Icon style={styles.listIcon} name="list" size={23} color="#20DC49"/>
-                    <Icon style={styles.userIcon} name="user" size={23} color="#20DC49"/>
-                </View>
-                <View>
-                    <Text style={styles.headerText}>GetEatCheap</Text>
-                </View>
-                <View style={styles.borderLine}></View>
+            <View style={styles.nav}>
+                  <Icon2 name="profile"
+                    size={25}
+                    color="#20DC49"
+                    style={{marginBottom:60,marginLeft:10}}
+                    />
+
+                    <Text style={{fontSize:25,color:'#20DC49',fontWeight:'bold',marginTop:30,marginLeft:2}}>GetEatCheap</Text>
+
+                    <Icon 
+                    name="bars"
+                    size={25}
+                    color='#20DC49'
+                    style={{marginBottom:60,marginRight:10}}
+                    />
             </View>
 
-            <View style={styles.body}>
-                <View>
-                    <TextInput style={styles.textBudget}
-                      placeholder="Enter Budget"/>
-                </View>
-                
+           <View style={styles.borderLine}></View>
+
+            <View style={styles.searchBar}>
+                  <TextInput type="text" placeholder='Search Product' style={styles.searchProduct}/>
+                  <Icon 
+                  name="search"
+                  size={25}
+                  color="black"
+                  style={{marginLeft:80}}
+                  />
+            </View>
+
+            <View style={styles.searchTab}> 
+                <View style={styles.leftLine}></View>
+                <Text style={{color:'#20DC49'}}>Popular Searches</Text>
+                <View style={styles.rightLine}></View>
             </View>
             
-        </View>
-    )
+  </View>
+  )
 }
 
 export default HomePage;
@@ -39,34 +56,47 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
       },
-      navigation: {
-        alignItems: "center",
-        justifyContent: "center",
-       display:'flex',
-       height: 80,
-       borderBottomWidth:2,
-       borderBottomColor: 'red',
+      nav:{
+        width:'100%',
+        height:'10%',
+        marginTop:-650,
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'space-between'
       },
-      theIcons: {
-        display: 'flex',
-        marginTop: -20,
+      borderLine:{
+        borderBottomWidth:2,
+        borderBottomColor:'#fff'
       },
-      listIcon: {
-        marginRight:600,
+     searchBar:{
+        backgroundColor:'#fff',
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'center',
+        width:'70%',
+        height:'6%',
+        marginTop:'10%',
+        marginLeft:'15%',
+        borderColor:'#20DC49',
+        borderWidth:2,
+        borderRadius:15,
       },
-      userIcon: {
-        marginLeft:600,
-        marginTop:-25,
+      leftLine:{
+        borderTopWidth:1,
+        borderTopColor:'#fff',
+        width:150,
       },
-      headerText: {
-        fontWeight:'bold',
-        fontSize:20,
-        fontStyle:'italic',
-        color:'#20DC49',
-        marginBottom:'-10%',
+      rightLine:{
+        borderTopWidth:1,
+        borderTopColor:'#fff',
+        width:150,
       },
-      textBudget: {
-        
+      searchTab:{
+        alignItems:'center',
+        flexDirection:'row',
+        justifyContent:'space-around',
+        marginTop:40,
       }
+     
      
 })
