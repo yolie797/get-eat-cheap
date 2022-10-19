@@ -11,11 +11,12 @@ import Search from './components/search';
 import HomePage from './components/homePage'
 import WelcomePage from './components/WelcomePage';
 import Profile from './components/profile';
+import SearchedResults from './components/seachedResults';
 
 const App = () => {
   return(
     <View style={styles.container}>
-        <HomePage/>
+        <SearchedResults/>
     </View>
   )
 }

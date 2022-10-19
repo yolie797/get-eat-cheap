@@ -11,3 +11,12 @@ export const Shops = [{image:require('../assets/shoprite.png'),id:'7'},
                       {image:require('../assets/makro.jpg'),id:'8'},
                       {image:require('../assets/picknpay.png'),id:'9'},
 ];
+
+export const milk = [{image:require('../assets/cloverMilk.webp'),id:'10'},
+                            {image:require('../assets/crytalMilk.webp'),id:'11'},
+                            {image:require('../assets/fairCapeFullMilk.webp'),id:'12'},
+                            {image:require('../assets/fairCapeLowMilk.webp'),id:'13'},
+                            {image:require('../assets/firstChoiceMilk.webp'),id:'14'},
+                            {image:require('../assets/numelMilk.webp'),id:'15'},
+
+]
