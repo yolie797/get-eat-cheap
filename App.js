@@ -12,11 +12,12 @@ import HomePage from './components/homePage'
 import WelcomePage from './components/WelcomePage';
 import Profile from './components/profile';
 import SearchedResults from './components/seachedResults';
+import ListModiakgotla from './components/ListModiakgotla';
 
 const App = () => {
   return(
     <View style={styles.container}>
-        <SearchedResults/>
+        <ListModiakgotla/>
     </View>
   )
 }
