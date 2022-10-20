@@ -7,8 +7,10 @@ import {Data,Shops} from '../DataAsset/data'
 import { TouchableOpacity } from 'react-native-web';
 
 
+
 const HomePage = () =>{
   const [indexCheck,setIndexCheck] = useState("0");
+  
 
     return(
         <View style={styles.container}>
@@ -62,6 +64,7 @@ const HomePage = () =>{
                                 style={{height:70,width:70,borderRadius:20,backgroundColor:'#fff',marginLeft:10}}
                                 source={item.image}
                                 />
+                                
                                 
                             </View>
               

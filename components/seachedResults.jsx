@@ -2,28 +2,32 @@ import React, {useState,useEffect} from 'react'
 import { StyleSheet, Text, View, TextInput,Button,TouchableOpacity,Image,FlatList } from 'react-native'
 import ListItemSwipeable from 'react-native-elements/dist/list/ListItemSwipeable';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {milk,Shops,Data} from '../DataAsset/data'
+import {milk,milk2,Shops,Data} from '../DataAsset/data';
+import { CheckBox } from 'react-native-elements';
 
 const SearchedResults = () =>{
     const[result,setResult] = useState('');
     const [indexCheck,setIndexCheck] = useState("0");
     const [data,setData] = useState([]);
+    const [checked,setChecked] = useState(false);
+    const theChecked = [];
+
+  const click = () =>{
+    if(checked===true){
+      theChecked.push("true");
+    }
+  }
 
     function events(){
-    if(result==="milk"){
-        data.push(milk)
-    }else if(result==="Shops"){
-        data.push(Shops)
-    }else if(result==="Data"){
-        data.push(Data)
-    }
-        
-        console.log(data);
+        if(result==="milk"){
+            data.push(milk)
+        }else if(result==="Shops"){
+            data.push(Shops)
+        }else if(result==="Data"){
+            data.push(Data)
+        }       
     }
 
-    useEffect(()=>{
-        
-    })
     return(
         <View style={styles.container}>
             <View style={styles.nav}>
@@ -56,26 +60,52 @@ const SearchedResults = () =>{
                     onPress={events}/>
             </View>
 
-            <View style={styles.listResults}>
-            <View style={{marginTop:15,marginBottom:15}}>
-              <FlatList
+            <View>
+            <FlatList
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
-                    style={{marginTop:50,marginLeft:60,marginRight:60}}
+                    style={{marginTop:80,marginLeft:50,marginRight:60}}
                     data={milk}
                     keyExtractor={(item)=>item.id}
                     extraData={indexCheck}
-                    renderItem={({item})=>(
+                    renderItem={({item,index})=>(
                             <View style={styles.popularPics}>
                                 <Image
-                                style={{height:70,width:70,borderRadius:20,backgroundColor:'#fff',marginLeft:10}}
+                                style={{height:70,width:70,borderRadius:20,backgroundColor:'#fff',marginLeft:25,marginBottom:10}}
+                                source={item.image} 
+                                />  
+                                <CheckBox title="" checked={checked} onPress={()=>setChecked(!checked)}/>
+                            </View>
+                            
+              
+                    )}
+                     />
+            </View>
+
+            <View>
+            <FlatList
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                    style={{marginTop:70,marginLeft:50,marginRight:60}}
+                    data={milk2}
+                    keyExtractor={(item)=>item.id}
+                    extraData={indexCheck}
+                    renderItem={({item,index})=>(
+                            <View style={styles.popularPics}>
+                                <Image
+                                style={{height:70,width:70,borderRadius:20,backgroundColor:'#fff',marginLeft:25,marginBottom:10}}
                                 source={item.image}
                                 />
-                                
+                                <CheckBox title="" checked={checked} onPress={()=>setChecked(!checked)}/>
                             </View>
               
                     )}
                      />
+            </View>
+
+            <View style={styles.listResults}>
+                <View style={{marginTop:80,alignItems:'center'}}>
+                    <TouchableOpacity style={styles.AddBtn}>Add</TouchableOpacity>
                 </View>
             </View>
             
@@ -103,7 +133,7 @@ const styles = StyleSheet.create({
         fontSize:15,
         color:'#20DC49',
         fontWeight:'bold',
-        marginTop:120,
+        marginTop:140,
       },
       leftLine:{
         borderTopWidth:1,
@@ -123,14 +153,27 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         width:'70%',
         height:'6%',
-        marginTop:'17%',
+        marginTop:'25%',
         marginBottom:'8%',
         marginLeft:'15%',
         borderColor:'#20DC49',
         borderWidth:2,
         borderRadius:15,
       },
-      searchResults:{
-
+      AddBtn:{
+        backgroundColor:'#20DC49',
+        height:50,
+        width:150,
+        alignItems:'center',
+        borderRadius:15,
+        justifyContent:'center'
+        
+        
+      },
+      popularPics:{
+        alignItems:'center',
+        flexDirection:'column',
+        justifyContent:'center'
+        
       }
 })
