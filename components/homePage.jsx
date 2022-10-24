@@ -1,22 +1,23 @@
 import React,{useState} from 'react'
 import { StyleSheet, Text, View, TextInput, FlatList,Image, Button } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome';
+//import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
 import {Data,Shops} from '../DataAsset/data'
 //import { Button } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-web';
+import {Icon,withBadge} from 'react-native-elements'
 
 
 
 const HomePage = () =>{
   const [indexCheck,setIndexCheck] = useState("0");
-  
+  const BadgeIcon = withBadge(0)(Icon);
 
     return(
         <View style={styles.container}>
             <View style={styles.nav}>
-                  <Icon name="list-alt"
-                    size={25}
+                  <BadgeIcon name="list-alt"
+                    size={30}
                     color="#20DC49"
                     style={{marginBottom:60,marginLeft:10}}
                   />
@@ -24,8 +25,8 @@ const HomePage = () =>{
                     <Text style={{fontSize:25,color:'#20DC49',fontWeight:'bold',marginTop:50,marginLeft:2}}>GetEatCheap</Text>
 
                     <Icon 
-                    name="bars"
-                    size={25}
+                    name="menu"
+                    size={30}
                     color='#20DC49'
                     style={{marginBottom:60,marginRight:10}}
                     />
