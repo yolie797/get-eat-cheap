@@ -19,7 +19,7 @@ import List from './components/list';
 const App = () => {
   return(
     <View style={styles.container}>
-        <SearchedResults/>
+        <SearchedLoading/>
     </View>
   )
 }

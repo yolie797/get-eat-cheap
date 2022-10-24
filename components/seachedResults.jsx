@@ -46,7 +46,6 @@ const SearchedResults = () => {
             color="#20DC49"
           />
         </View>
-
       </View>
       <View style={{ marginTop: -10 }}>
         <View style={styles.leftLine}></View>
