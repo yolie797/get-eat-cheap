@@ -15,11 +15,12 @@ import SearchedResults from './components/seachedResults';
 import ListModiakgotla from './components/ListModiakgotla';
 import SearchedLoading from './components/searchedLoading';
 import List from './components/list';
+import SignInScreen from './components/authScreens/SigninScreen/SignInScreen';
 
 const App = () => {
   return(
     <View style={styles.container}>
-        <SearchedLoading/>
+        <WelcomePage/>
     </View>
   )
 }
