@@ -4,8 +4,12 @@ import CustomInput from '../../CustomInput/CustomInput'
 import CustomButton from '../../CustomButton/CustomButton';
 import GoogleButton from 'react-google-button'
 import basket from '../../../assets/trolley.jpg'
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import {auth,db} from "../../config/firebase";
+import {collection,addDoc} from "firebase/firestore"
+import { TouchableOpacity } from 'react-native-web';
 
-const SignInScreen = () => {
+const SignInScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,8 +26,16 @@ const SignInScreen = () => {
   const onSignInGoogle = () => {
     console.warn('onSignInGoogle');
   };
+
+  const handleSignIn=()=>{
+    signInWithEmailAndPassword(auth,email, password).then(userCredentials=>{
+    const user = userCredentials.user;
+    console.log(user.email);
+    navigation.navigate('WelcomePage')
+  }).catch(error=> alert(error.message)) 
+  } 
+  
   return (
-    <ScrollView>
       <View style={styles.root}>
         <View>
           <Image source={basket} style={{ width: 200, height: 180 }} />
@@ -44,20 +56,19 @@ const SignInScreen = () => {
           <CustomInput placeholder="Password" value={password} setValue={setPassword} secureTextEntry />
         </View>
         <View>
-          <CustomButton text="Log in Account" onPress={onSignInPressed} />
+          <CustomButton text="Log in Account" onPress={handleSignIn} />
         </View>
         <View>
           <GoogleButton style={{ width: 200, marginTop: 20 }} />
         </View>
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text style={{ color: '#fff' }}>Have an account?</Text>
-          <Text style={{ color: '#20DC49' }}
-            onPress={() => Linking.openURL('')}>SignUp
-          </Text>
+          <TouchableOpacity style={{ color: '#20DC49' }}
+            onPress={() => navigation.navigate('signUp')}>SignUp
+          </TouchableOpacity>
         </View>
 
       </View>
-    </ScrollView>
   );
 };
 
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
   root: {
     backgroundColor: '#1D2D44',
     alignItems: 'center',
-    padding: 20,
+    height:'100%'
   },
   title1: {
     fontSize: 16,

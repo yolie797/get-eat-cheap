@@ -1,18 +1,74 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, SafeAreaView, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign } from 'react-native-vector-icons';
 import { Data } from '../DataAsset/data';
-import img1 from '../assets/break.jpg'
-import img2 from '../assets/maize.jpg'
-import img3 from '../assets/rice.jpg'
-import img4 from '../assets/cooking oil.jpg'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import img1 from '../assets/break.jpg'
+// import img2 from '../assets/maize.jpg'
+// import img3 from '../assets/rice.jpg'
+// import img4 from '../assets/cooking oil.jpg'
 
-const List = () => {
+const List = ({ route }) => {
+    const selectedList = route.params.cartList
+    const [list, setList] = useState([])
+
+    useEffect(() => {
+        getData().then((res) => {
+            // shoppingList.push(res)
+
+            console.log('====================================');
+            console.log(res);
+            setList(res)
+
+            console.log('====================================');
+        })
+        console.log('====================================');
+        console.log(selectedList);
+        console.log('====================================');
+        // showList = shoppingList[0]
+        // console.log(showList);
+    }, [])
+    const getData = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@storage_Key')
+
+            return jsonValue != null ? JSON.parse(jsonValue) : null;
+        } catch (e) {
+            // error reading value
+        }
+    }
+    const Item = ({ title, price, image }) => (
+        <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around',marginBottom:20,
+        borderWidth:2,borderColor:'#20DC49',borderRadius:10 }}>
+            <View>
+                <Image source={image} style={{ width: 100, height: 100,justifyContent:'flex-start' }}></Image>
+            </View>
+
+            <View style={styles.inputNumber}>
+                <AntDesign name="pluscircleo" size={16} color="#20DC49" marginLeft={10} />
+                <Text style={{ color: '#20DC49', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
+                    0
+                </Text>
+                <AntDesign name="minuscircleo" size={16} color="#20DC49" />
+            </View>
+
+            <View>
+                <Text style={styles.details2}>{title}</Text>
+                <Text style={styles.details2}>{price}</Text>
+            </View>
+
+        </View>
+    );
+    const renderItem = ({ item }) => <Item title={item.name} price={item.price} image={item.image} />;
+
     return (
 
         <View style={styles.container}>
-            <View style={styles.nav}>
+            <SafeAreaView style={styles.container}>
+                <FlatList data={selectedList} renderItem={renderItem} keyExtractor={item => item.id} />
+            </SafeAreaView>
+            {/* <View style={styles.nav}>
                 <Icon name="home"
                     size={25}
                     color="#20DC49"
@@ -97,8 +153,8 @@ const List = () => {
 
             <View style={styles.btnHistory}>
                 <TouchableOpacity style={styles.historyBtn}>Check</TouchableOpacity>
-            </View>
-            
+            </View> */}
+
         </View>
     )
 }
@@ -108,7 +164,7 @@ export default List;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: "center",
+        backgroundColor: '#1D2D44'
 
     },
     nav: {
@@ -166,6 +222,7 @@ const styles = StyleSheet.create({
         // height: 30,
         // borderRadius: 12,
         backgroundColor: '#33517B',
+        marginLeft:10,
         // display: 'flex', flexDirection: 'row',
         // alignItems: 'center',
         // // alignContent: 'center',
@@ -208,9 +265,9 @@ const styles = StyleSheet.create({
         // padding: '4px',
     },
     details2: {
-        display: 'flex',
-        flexDirection: 'column',
-        flexWrap: 'wrap',
+        color:'#20DC49',
+        fontSize:10,
+        
     },
 
     listView3: {
@@ -294,7 +351,16 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         marginTop: 15,
         marginLeft: '30%',
-    }
+    },
+    item: {
+        backgroundColor: '#f9c2ff',
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
+    },
 
 
 });

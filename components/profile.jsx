@@ -4,13 +4,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
 import { Avatar} from 'react-native-paper';
 
-const Profile =()=>{
+const Profile =({navigation})=>{
     const [Pic,SetPic] = React.useState('');
     return(
         <View style={styles.container}>
             <View style={styles.nav}>
-                <Icon style={styles.listIcon} name="close" size={20} color="#20DC49"/>
-                <TouchableOpacity style={styles.logout}>Logout</TouchableOpacity>
+                <Icon style={styles.listIcon} name="close" size={20} color="#20DC49"
+                onPress={()=>navigation.navigate('HomePage')}/>
+                <TouchableOpacity style={styles.logout} onPress={()=>navigation.navigate('Login')}>Logout</TouchableOpacity>
                 <Text style={styles.textProfile}>Profile</Text>
             </View>
             <View>
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
         /*flex: 1,
         justifyContent: "center",*/
         height:'100%',
+        backgroundColor:'#1D2D44',
        
     },
     nav:{

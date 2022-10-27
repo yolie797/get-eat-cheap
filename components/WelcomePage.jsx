@@ -1,15 +1,38 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
 
-const welcomePage = () => {
-    const [selected, setSelected] = React.useState("");
-    const data = [
-        { key: '1', value: 'ShopRite' },
-        { key: '2', value: 'PicknPay' },
-        { key: '3', value: 'Spar' },
-    ];
+const welcomePage = ({navigation}) => {
+    const [selected, setSelected] = React.useState("0");
+    const [budget, setBudget] = useState(0)
+    // const data = [
+    //     { key: '1', value: 'ShopRite' },
+    //     { key: '2', value: 'PicknPay' },
+    //     { key: '3', value: 'Spar' },
+    // ];
+
+    const handleClick = event => {
+        event.preventDefault();
+        const selectLink = data[selected].link
+        navigation.navigate('HomePage',{
+            selectLink,budget
+        })
+    
+        console.log(budget);
+      };
+
+      const handleChange = event => {
+        setBudget(event.target.value);
+    
+      };
+
+      const data = [
+        {key:0,value:'Game',link:"http://scraper.mnisivee.com/get-game-products?search="},
+        {key:1,value:'PicknPay',link:"http://scraper.mnisivee.com/get-pnp-products?search="},
+        {key:2,value:'Makro',link:"http://scraper.mnisivee.com/get-makro-products?search="},
+      ];
+  
     return (
         <View style={styles.container}>
             <View style={styles.navigator}>
@@ -19,7 +42,7 @@ const welcomePage = () => {
                 <View style={styles.line2}></View>
             </View>
             <View>
-                <TextInput style={styles.textBudget} placeholder="Enter Budget" />
+                <TextInput style={styles.textBudget} placeholder="Enter Budget" onChange={handleChange}/>
             </View>
             <View style={styles.dropShop}>
                 <SelectList boxStyles={{ backgroundColor: 'white', borderColor: '#20DC49', marginTop: '10%', color: '#20DC49', borderWidth: 2 }}
@@ -27,7 +50,7 @@ const welcomePage = () => {
             </View>
             <View style={styles.btnCont}>
                 {/*<Button title="Proceed" style={styles.proceedBtn}></Button> */}
-                <TouchableOpacity style={styles.proceedBtn}>Proceed</TouchableOpacity>
+                <TouchableOpacity style={styles.proceedBtn} onPress={handleClick} title='Proceed'>Proceed</TouchableOpacity>
             </View>
             <View style={styles.bottomLn}></View>
             <View style={styles.copyright}>
@@ -49,14 +72,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        marginTop: '80%',
+        //marginTop: '80%',
+        backgroundColor:'#1D2D44',
 
 
     },
     navigator: {
-        marginTop: -450,
+        marginTop: -150,
         marginBottom: 60,
-        alignItems: 'center'
+        alignItems: 'center',
+        
     },
     navWelcome: {
         color: '#20DC49',
@@ -80,6 +105,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 30,
         marginTop: 30,
+        
     },
     dropShop: {
         width: '70%',
@@ -87,18 +113,21 @@ const styles = StyleSheet.create({
         marginLeft: '15%',
         borderColor: '#20DC49',
         marginBottom: '5%',
+        
     },
     line: {
         width: '25%',
         borderTopWidth: 2,
         borderTopColor: '#fff',
         marginEnd: '75%',
+        
     },
     line2: {
         width: '25%',
         borderTopWidth: 2,
         borderTopColor: '#fff',
         marginStart: '75%',
+        
     },
     proceedBtn: {
         borderWidth: 2,

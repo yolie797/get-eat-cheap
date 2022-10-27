@@ -5,10 +5,13 @@ import ListItemSwipeable from 'react-native-elements/dist/list/ListItemSwipeable
 //import LottieView from 'lottie-react-native';
 import { Icon, withBadge } from 'react-native-elements'
 
+import RingLoader from "react-spinners/RingLoader";
 
 const SearchedLoading = () => {
   const animation = useRef(null);
   const BadgeIcon = withBadge(0)(Icon);
+  let [loading, setLoading] = useState(true);
+
   return (
     <View>
       <View style={styles.nav}>
