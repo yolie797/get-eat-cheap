@@ -2,23 +2,28 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Image, FlatList } from 'react-native'
 import ListItemSwipeable from 'react-native-elements/dist/list/ListItemSwipeable';
 //import Icon from 'react-native-vector-icons/FontAwesome';
-import { milk, milk2, Shops, Data } from '../DataAsset/data';
+import { milk, milk2, Shops, Data, getItemCount } from '../DataAsset/data';
 import { CheckBox } from 'react-native-elements';
 import { Icon, withBadge } from 'react-native-elements'
 import { Pressable } from 'react-native';
 import { ScrollView } from 'react-native-web';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getSelectedList, setSelectedList } from '../DataAsset/data';
 
-const SearchedResults = ({ route, navigation, searched,myList }) => {
+const SearchedResults = ({ route, navigation, searched, myList }) => {
   const [result, setResult] = useState('');
   const [indexCheck, setIndexCheck] = useState("0");
   const [data, setData] = useState([]);
   const [checked, setChecked] = useState(false);
   const theChecked = [];
-  const BadgeIcon = withBadge(0)(Icon);
+  const [qty, setQTY] = useState();
+  const [itemCount,setItemCount] = useState(0)
+  const BadgeIcon = withBadge(itemCount)(Icon);
 
   useEffect(() => {
     setData(route.params.item)
+    
+    console.log(setItemCount(getItemCount()));
     // restoreListFromAsync() 
   }, [])
 
@@ -28,12 +33,11 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
     try {
       // const newItem = [ value , ...listItem];
       await restoreListFromAsync().then(() => {
-        // const newL = [...myList, value]
-        myList.push(value)
-        console.log('====================================');
-        console.log(myList);
-        console.log('====================================');
-        const jsonValue = JSON.stringify(myList)
+        
+        myList.push({value, qty:1})
+        setSelectedList({value,qty:1})
+        setItemCount(getItemCount())
+        const jsonValue = JSON.stringify(getSelectedList())
         AsyncStorage.setItem('@storage_Key', jsonValue).then({
           myList: []
         })
@@ -58,6 +62,7 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
         if (!parsedList || typeof parsedList !== 'object') return;
 
         myList = parsedList
+
         // setListItem(parsedList);
       })
       .catch(err => {
@@ -77,22 +82,6 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
   }
 
 
-  // console.log(cart);
-  // const click = () => {
-  //   if (checked === true) {
-  //     theChecked.push("true");
-  //   }
-  // }
-
-  // function events() {
-  //   if (result === "milk") {
-  //     data.push(milk)
-  //   } else if (result === "Shops") {
-  //     data.push(Shops)
-  //   } else if (result === "Data") {
-  //     data.push(Data)
-  //   }
-  // }
 
   return (
     <View style={styles.container}>
@@ -101,15 +90,18 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
           size={25}
           color="#20DC49"
           style={{ marginLeft: 20, marginTop: 20 }}
-          onPress={()=>navigation.navigate('HomePage')}
+          onPress={() => navigation.navigate('HomePage')}
         />
 
         <Text style={styles.searchTxt}>Searched Results</Text>
         <TouchableOpacity style={{ marginTop: 20, marginRight: 20 }}
-        onPress={() => navigation.navigate('List',{'cartList':myList})}>
+          onPress={() => navigation.navigate('List', { 'cartList': myList })}>
           <BadgeIcon name="list-alt"
             size={30}
             color="#20DC49"
+           
+            
+
           />
         </TouchableOpacity>
       </View>
@@ -117,12 +109,12 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
         <View style={styles.leftLine}></View>
         <View style={styles.rightLine}></View>
       </View>
-      <TouchableOpacity onPress={() => clearStorage()}>
-                  <Text style={{color:'white'}}>Clear</Text>
-                </TouchableOpacity>
-      <ScrollView>
+      <TouchableOpacity onPress={() => clearStorage()} style={{height:50,width:80,borderWidth:2,borderRadius:10,backgroundColor:'#20DC49',textAlign:'center'}}>
+        <Text style={{ color: 'black',fontWeight:'bold' }}>Clear Cart</Text>
+      </TouchableOpacity>
+      <ScrollView >
         <View
-          style={{ flex: 1, flexDirection: 'row', height: '60vh', width: '100vw', marginTop: 20, marginBottom: 40, flexWrap: 'wrap' }}>
+          style={{ flexDirection: 'column',display:'flex',alignSelf:'center', height: '60vh',  marginTop: 20, marginBottom: 40,}}>
           {data.map((item, index) => {
             return <View style={styles.popularPics} key={index}>
               <Image
@@ -135,20 +127,9 @@ const SearchedResults = ({ route, navigation, searched,myList }) => {
               <View>
                 <Text style={styles.txt}>R{item.price}</Text>
               </View>
-              <TouchableOpacity onPress={() => storeData(item)} style={{ backgroundColor: 'green', alignItems: "center", justifyContent: 'center'
-                }}>
-                <Text style={{ color: '#fff'}}>Add to list</Text>
+              <TouchableOpacity onPress={() => storeData(item)} style={styles.AddBtn}>
+                <Text style={{ color: '#fff' }}>+</Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity style={{backgroundColor:'green',alignItems:"center",justifyContent:'center'}}>
-                                  <Text style={{color:'#fff'}}>-</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{backgroundColor:'green',alignItems:"center",justifyContent:'center'}}>
-                                  <Text style={{color:'#fff'}}>{'0'}</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{backgroundColor:'green',alignItems:"center",justifyContent:'center'}}>
-                                  <Text style={{color:'#fff'}}>+</Text>
-                                </TouchableOpacity> */}
-              {/* <CheckBox title="" checked={checked} onPress={()=>setChecked(checked)}/> */}
             </View>
 
           })}
@@ -197,26 +178,35 @@ const styles = StyleSheet.create({
   },
   AddBtn: {
     backgroundColor: '#20DC49',
-    height: 50,
-    width: 150,
-    alignItems: 'center',
+    height: 20,
+    width: 20,
+    // alignItems: 'center',
     borderRadius: 15,
-    justifyContent: 'center'
-
+    // justifyContent: 'center',
+    position:'absolute',
+    bottom:0,
+    right:0
 
   },
   popularPics: {
-    width: "32vw",
-    marginLeft: '1vw',
+    width: "40vw",
+    // marginLeft: '1vw',
     height: '21vh',
     textAlign: 'center',
     borderWidth: 1,
-    borderColor: 'grey'
+    borderColor: 'grey',
+    alignContent:'center',
+    display:'flex',
+    justifyContent:'center',
+    alignItems:'center',
+    // padding:10,
+    margin:10
 
   },
-  txt:{
-    color:'white',
-    flexGrow:1,
-    fontSize:10,
+  txt: {
+    color: 'white',
+    flexGrow: 1,
+    fontSize: 10,
+    margin: 10
   }
 })

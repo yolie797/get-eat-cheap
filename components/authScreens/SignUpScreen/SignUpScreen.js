@@ -4,7 +4,7 @@ import CustomInput from '../../CustomInput/CustomInput'
 import CustomButton from '../../CustomButton/CustomButton';
 import GoogleButton from 'react-google-button'
 import { auth, db } from "../../config/firebase";
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { collection, addDoc } from "firebase/firestore"
 import { TouchableOpacity } from 'react-native-web';
 import { Navigation } from 'swiper';
@@ -15,6 +15,20 @@ const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmPassword] = useState('');
+
+  const provider = new GoogleAuthProvider();
+
+  const signup=()=> {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+       
+        navigation.navigate('WelcomePage')
+
+      }).catch((error) => {
+        alert('Failed to sign in with google')
+      });
+  }
+
 
   const onCreateAccountPressed = () => {
     console.warn('onCreateAccountPressed');
@@ -29,58 +43,6 @@ const SignUpScreen = ({ navigation }) => {
     console.warn('Sign in');
 
   }
-
-  //   const registerWithEmail = async() => {
-  //     console.log(email);
-  //     //check if inputs are empty
-  //     if (email === '') {
-  //         //email empty
-  //         //setErrMsg('Email is required to register');
-  //         alert('Email is required to register');
-  //     } else {
-  //         if (password === '') {
-  //             //new password empty
-  //             //setErrMsg('Password is required to register');
-  //             alert('Wrong password')
-  //         } else {
-  //             if (confirmpassword === '') {
-  //                 //confirm password empty
-  //                 alert('Wrong Password')
-  //                 //setErrMsg('Confirm password is required to register');
-  //             } else {
-  //                 if (password !== confirmpassword) {
-  //                     //pasword does not match
-  //                     //setErrMsg('Passwords entered does not match');
-  //                     alert('passwords do not match')
-  //                 } else {
-  //                     //good to go
-  //                     await createUserWithEmailAndPassword(auth, email, password).then(
-  //                         userCridential => {
-  //                             //setErrMsg('');
-  //                             const collectionRef = collection(db, "profiles");
-  //                             const profile = {
-  //                               firstname: firstname,
-  //                               lastname: lastname,
-  //                               email: email,
-  //                             };
-
-  //                             addDoc(collectionRef, profile).then(() => {
-  //                                 alert("Registered successfully");
-  //                                 navigation.navigate('WelcomePage')
-  //                             }).catch((err) => {
-  //                                 console.log(err);
-  //                             })
-  //                         }
-  //                     ).catch(
-  //                         err => {
-  //                             alert('Failed to register')
-  //                         }
-  //                     )
-  //                 }
-  //             }
-  //         }
-  //     }
-  // }
 
   const handleSignUp = () => {
     if (email === '') {
@@ -149,12 +111,9 @@ const SignUpScreen = ({ navigation }) => {
       <View>
         <CustomButton text="Create Account" onPress={handleSignUp} />
       </View>
-      {/* <View style={{alignItems:'center',flexDirection:'row'}}>
-          <Icon name="google" size={25} color="red"/>
-          <CustomButton text="SignUp with Google" onPress={onSignInGoogle} bgColor="#FAE9EA" fgColor="#DD4D44"/>
-        </View> */}
+      
       <View>
-        <GoogleButton style={{ width: 200, marginTop: 20 }} />
+        <GoogleButton style={{ width: 200, marginTop: 20 }} onClick={signup}/>
       </View>
       <View style={{ flexDirection: 'row', marginTop: 20 }}>
         <Text style={{ color: '#fff' }}>Have an account?</Text>
@@ -162,8 +121,6 @@ const SignUpScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Login')}>SignIn
         </TouchableOpacity>
       </View>
-
-      {/* <CustomButton text="Have an account? SignIn" onPress={onSignInPressed} type="TERTIARY" /> */}
 
     </View>
 

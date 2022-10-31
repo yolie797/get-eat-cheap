@@ -4,14 +4,58 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign } from 'react-native-vector-icons';
 import { Data } from '../DataAsset/data';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getBudget, getSelectedList, getStoreImg } from '../DataAsset/data';
+import { MaterialIcons } from '@expo/vector-icons'; 
 // import img1 from '../assets/break.jpg'
 // import img2 from '../assets/maize.jpg'
 // import img3 from '../assets/rice.jpg'
 // import img4 from '../assets/cooking oil.jpg'
 
-const List = ({ route }) => {
+const List = ({ route, navigation }) => {
     const selectedList = route.params.cartList
     const [list, setList] = useState([])
+
+
+    const [quantity, setQuantity] = useState(1)
+    const imageStore = getStoreImg()
+    let budget = 0
+    budget = getBudget()
+    let totalQuantity = 0;
+    let totalPrice = 0;
+    const increment = () => {
+        setQuantity(quantity + 1);
+    }
+    const decrement = () => {
+        setQuantity(quantity - 1);
+    }
+    const removeItem = async () => {
+        try {
+            await AsyncStorage.removeItem('@storage_Key');
+            console.log('Data removed')
+        }
+        catch (exception) {
+            console.log(exception)
+        }
+
+    }
+    const addQtyProduct = async (product, selectedQty, selectedIndex) => {
+        let newqty = selectedQty + 1
+        console.log(selectedQty);
+
+        setList(current => current.map((obj, i) => i === selectedIndex
+            ? { ...obj, value: product, qty: newqty }
+            : obj))
+
+    }
+
+    const removeQtyProduct = async (product, selectedQty, selectedIndex) => {
+        let newqty = selectedQty - 1
+        console.log(selectedQty);
+
+        setList(current => current.map((obj, i) => i === selectedIndex
+            ? { ...obj, value: product, qty: newqty }
+            : obj))
+    }
 
     useEffect(() => {
         getData().then((res) => {
@@ -38,122 +82,105 @@ const List = ({ route }) => {
             // error reading value
         }
     }
-    const Item = ({ title, price, image }) => (
-        <View style={{ alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around',marginBottom:20,
-        borderWidth:2,borderColor:'#20DC49',borderRadius:10 }}>
+
+    if (list != null) {
+        console.log(list);
+        list.forEach((item) => {
+
+            totalQuantity += item.qty;
+            totalPrice += item.qty * item.value.price;
+
+        }, 0)
+    }
+
+    const ListItem = ({ item, index }) => {
+        return (
             <View>
-                <Image source={image} style={{ width: 100, height: 100,justifyContent:'flex-start' }}></Image>
-            </View>
+                <View style={styles.cartCard}>
+                <AntDesign style={{padding:10}}
+                                name='delete'
+                                size={20}
+                                color={'#20DC49'}
+                                onPress={removeItem}
+                            />
+                     {/* <MaterialIcons onPress={removeItem} name="delete-outline" size={24} color="#20DC49" /> */}
+                    <Image source={item.value.image} style={{ height: 80, width: 80 }} />
+                    <View style={{ marginLeft: 40, width: 70, height: 40, alignItems: 'center', backgroundColor: '#33517B' }}>
+                        <View style={styles.listView2}>
+                            <AntDesign name="minuscircleo" size={16} color="#20DC49" onPress={() => removeQtyProduct(item.value, item.qty, index)} />
+                            <Text style={{ fontWeight: 'bold', fontSize: 18,padding:5 }}>{item.qty}</Text>
+                            <AntDesign name="pluscircleo" size={16} color="#20DC49" marginLeft={10} onPress={() => addQtyProduct(item.value, item.qty, index)} />
+                           
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            height: 100,
+                            marginLeft: 40,
+                            paddingVertical: 20,
+                            flex: 1,
+                        }}>
+                        <Text style={{ fontWeight: '500', fontSize: 12, color: '#20DC49' }}>{item.value.name}</Text>
+                        <Text style={{ fontSize: 17, fontWeight: 'bold', color: '#20DC49' }}>R{item.value.price}</Text>
+                    </View>
 
-            <View style={styles.inputNumber}>
-                <AntDesign name="pluscircleo" size={16} color="#20DC49" marginLeft={10} />
-                <Text style={{ color: '#20DC49', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
-                    0
-                </Text>
-                <AntDesign name="minuscircleo" size={16} color="#20DC49" />
-            </View>
+                </View>
 
-            <View>
-                <Text style={styles.details2}>{title}</Text>
-                <Text style={styles.details2}>{price}</Text>
             </View>
-
-        </View>
-    );
-    const renderItem = ({ item }) => <Item title={item.name} price={item.price} image={item.image} />;
+        )
+    };
+    // const renderItem = ({ item }) => <ListItem title={item.name} price={item.price} image={item.image} />;
 
     return (
 
         <View style={styles.container}>
-            <SafeAreaView style={styles.container}>
-                <FlatList data={selectedList} renderItem={renderItem} keyExtractor={item => item.id} />
-            </SafeAreaView>
-            {/* <View style={styles.nav}>
+            <View style={styles.nav}>
                 <Icon name="home"
                     size={25}
                     color="#20DC49"
-                    style={{ marginBottom: 60, marginLeft: 10 }}
+                    style={{ marginLeft: 10 }}
+                    onPress={() => navigation.navigate('HomePage')}
                 />
             </View>
-
-            <View style={styles.navigator}>
-                <Text style={styles.TextList}>List</Text>
-                <View style={styles.line1}></View>
-                <View style={styles.line2}></View>
+            <View style={{
+                marginTop: 20, alignItems: 'center', flexDirection: 'row',
+                justifyContent: 'space-between'
+            }}>
+                <View style={styles.leftLine}></View>
+                <Text style={styles.searchTxt}>List</Text>
+                <View style={styles.rightLine}></View>
             </View>
+           
+            <Image source={imageStore} style={{ width: 150, height: 80, alignSelf: 'center', marginTop: 20 }} />
+           {/* <View style={styles.results_style}>
+           <Text style={{ color: '#20DC49' }}>Total Quantity: {totalQuantity}</Text>
+                <Text style={{ color: '#20DC49' }}>Total Price: {totalPrice.toFixed(2)}</Text>
+                <Text style={{ color: '#20DC49' }}>Budget:{budget}</Text>
+                {(totalPrice > budget)
+                    ? <Text style={{ color: '#20DC49' }}>Out of budget</Text>
+                    : <Text style={{ color: '#20DC49' }}>In Budget</Text>
+                }
+           </View> */}
+            <ScrollView>
+                <View style={{ marginBottom: 50 }}>
 
-            <View style={styles.listView}>
-                <Image style={styles.img} source={img1} />
-                <View style={styles.inputNumber}>
-                    <AntDesign name="pluscircleo" size={16} color="#50E683" marginLeft={10} />
-                    <Text style={{ color: '#50E683', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
-                        0
-                    </Text>
-                    <AntDesign name="minuscircleo" size={16} color="#50E683" />
+                    <FlatList
+                        data={list}
+                        renderItem={ListItem}
+                        keyExtractor={item => item._id}
+                    />
                 </View>
-                <View style={styles.details}>
-                    <Text style={{ color: '#50E683' }}>Sunbake</Text>
-                    <Text style={{ color: '#50E683' }}>700g bread</Text>
-                    <Text style={{ color: '#50E683' }}>R 17.00</Text>
-                </View>
+            </ScrollView>
+            <View>
+                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Total Quantity: {totalQuantity}</Text>
+                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Total Price: {totalPrice.toFixed(2)}</Text>
+                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Budget:{budget}</Text>
+                {(totalPrice > budget)
+                    ? <Text style={{ color: 'red' }}>Out Of Budget</Text>
+                    : <Text style={{ color: '#20DC49' }}>In Budget</Text>
+                }
+                <TouchableOpacity style={styles.checkBtn}>Download</TouchableOpacity>
             </View>
-
-            <View style={styles.listView2}>
-                <Image style={styles.img2} source={img2} />
-                <View style={styles.inputNumber2}>
-                    <AntDesign name="pluscircleo" size={16} color="#50E683" marginLeft={10} />
-                    <Text style={{ color: '#50E683', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
-                        0
-                    </Text>
-                    <AntDesign name="minuscircleo" size={16} color="#50E683" />
-                </View>
-                <View style={styles.details2}>
-                    <Text style={{ color: '#50E683' }}>Iwisa maize</Text>
-                    <Text style={{ color: '#50E683' }}>meal</Text>
-                    <Text style={{ color: '#50E683' }}>10kg </Text>
-                    <Text style={{ color: '#50E683' }}>R69.99</Text>
-                </View>
-            </View>
-
-            <View style={styles.listView3}>
-                <Image style={styles.img3} source={img3} />
-                <View style={styles.inputNumber3}>
-                    <AntDesign name="pluscircleo" size={16} color="#50E683" marginLeft={10} />
-                    <Text style={{ color: '#50E683', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
-                        0
-                    </Text>
-                    <AntDesign name="minuscircleo" size={16} color="#50E683" />
-                </View>
-                <View style={styles.details3}>
-                    <Text style={{ color: '#50E683' }}>Tastic </Text>
-                    <Text style={{ color: '#50E683' }}>Rice </Text>
-                    <Text style={{ color: '#50E683' }}>2kg</Text>
-                    <Text style={{ color: '#50E683' }}>R24.99</Text>
-                </View>
-            </View>
-
-            <View style={styles.listView4}>
-                <Image style={styles.img4} source={img4} />
-                <View style={styles.inputNumber4}>
-                    <AntDesign name="pluscircleo" size={16} color="#50E683" marginLeft={10} />
-                    <Text style={{ color: '#50E683', fontSize: '1em', marginLeft: 10, marginRight: 10 }}>
-                        0
-                    </Text>
-                    <AntDesign name="minuscircleo" size={16} color="#50E683" />
-                </View>
-                <View style={styles.details4}>
-                    <Text style={{ color: '#50E683' }}>Sunfoil </Text>
-                    <Text style={{ color: '#50E683' }}>Sunflower Oil </Text>
-                    <Text style={{ color: '#50E683' }}>2lt</Text>
-                    <Text style={{ color: '#50E683' }}>R90.00</Text>
-                </View>
-            </View>
-
-            <Text style={{ color: '#50E683', fontWeight: "bold", fontSize: 32, marginLeft: 20, marginTop: 55 }}>Budget:R1500</Text>
-
-            <View style={styles.btnHistory}>
-                <TouchableOpacity style={styles.historyBtn}>Check</TouchableOpacity>
-            </View> */}
 
         </View>
     )
@@ -163,71 +190,45 @@ export default List;
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 3,
         backgroundColor: '#1D2D44'
 
     },
     nav: {
-        width: '100%',
-        height: '10%',
-        marginTop: -150,
         alignItems: 'center',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginTop: 10
+    },
+    searchTxt: {
+        fontSize: 15,
+        color: '#20DC49',
+        fontWeight: 'bold',
+        //marginTop: 140,
+    },
+    leftLine: {
+        borderTopWidth: 1,
+        borderTopColor: '#fff',
+        width: 140,
+
+    },
+    rightLine: {
+        borderTopWidth: 1,
+        borderTopColor: '#fff',
+        width: 140,
+
     },
     navigator: {
         marginTop: -90,
         marginBottom: 60,
         alignItems: 'center'
     },
-
-    TextList: {
-        color: '#20DC49',
-        fontSize: 25,
-        marginTop: 30,
-        fontStyle: 'italic',
-    },
-    line1: {
-        width: '40%',
-        borderTopWidth: 2,
-        borderTopColor: '#fff',
-        marginEnd: '75%',
-    },
-    line2: {
-        width: '40%',
-        borderTopWidth: 2,
-        borderTopColor: '#fff',
-        marginStart: '75%',
-    },
-    listView: {
-        //display: 'flex', flexDirection: 'row', alignItems: 'center',
-        // alignContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        borderBottomColor: '#50E683',
-        borderBottomWidth: '1px',
-        padding: 5,
-        marginbottom: -1,
-    },
-    img: {
-        width: 85,
-        height: 75,
-        borderRadius: 5,
-    },
     inputNumber: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        // width: 85,
-        // height: 30,
-        // borderRadius: 12,
         backgroundColor: '#33517B',
-        marginLeft:10,
-        // display: 'flex', flexDirection: 'row',
-        // alignItems: 'center',
-        // // alignContent: 'center',
-        // justifyContent: 'space-evenly',
-        // padding: '4px',
+        padding: 5
+
     },
     details: {
         display: 'flex',
@@ -240,127 +241,56 @@ const styles = StyleSheet.create({
         // alignContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        borderBottomColor: '#50E683',
-        borderBottomWidth: '1px',
+        justifyContent: 'space-around',
         padding: 20,
         margin: -1,
-    },
-    img2: {
-        width: 85,
-        height: 75,
-        borderRadius: 5,
-    },
-    inputNumber2: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        // width: 85,
-        // height: 30,
-        // borderRadius: 12,
-        backgroundColor: '#33517B',
-        // display: 'flex', flexDirection: 'row',
-        // alignItems: 'center',
-        // // alignContent: 'center',
-        // justifyContent: 'space-evenly',
-        // padding: '4px',
+        flex: 1,
+
     },
     details2: {
-        color:'#20DC49',
-        fontSize:10,
-        
-    },
+        color: '#20DC49',
+        fontSize: 10,
 
-    listView3: {
-        //display: 'flex', flexDirection: 'row', alignItems: 'center',
-        // alignContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        borderBottomColor: '#50E683',
-        borderBottomWidth: '1px',
-        padding: 20,
-        margin: -1,
-    },
-    img3: {
-        width: 85,
-        height: 75,
-        borderRadius: 5,
-    },
-    inputNumber3: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        // width: 85,
-        // height: 30,
-        // borderRadius: 12,
-        backgroundColor: '#33517B',
-        // display: 'flex', flexDirection: 'row',
-        // alignItems: 'center',
-        // // alignContent: 'center',
-        // justifyContent: 'space-evenly',
-        // padding: '4px',
     },
     details3: {
         display: 'flex',
         flexDirection: 'column',
         flexWrap: 'wrap',
     },
-
-    listView4: {
-        //display: 'flex', flexDirection: 'row', alignItems: 'center',
-        // alignContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        borderBottomColor: '#50E683',
-        borderBottomWidth: '1px',
-        padding: 20,
-        margin: -1,
+    budget: {
+        fontSize: 40,
+        fontWeight: 'bold',
+        color: '#20DC49'
     },
-    img4: {
-        width: 85,
-        height: 75,
-        borderRadius: 5,
-    },
-    inputNumber4: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        // width: 85,
-        // height: 30,
-        // borderRadius: 12,
-        backgroundColor: '#33517B',
-        // display: 'flex', flexDirection: 'row',
-        // alignItems: 'center',
-        // // alignContent: 'center',
-        // justifyContent: 'space-evenly',
-        // padding: '4px',
-    },
-    details4: {
-        display: 'flex',
-        flexDirection: 'column',
-        flexWrap: 'wrap',
-    },
-    historyBtn: {
+    checkBtn: {
+        height: 60,
+        width: 180,
         borderWidth: 2,
-        borderColor: 'transparent',
+        borderColor: '#20DC49',
+        borderRadius: 5,
         backgroundColor: '#20DC49',
-        width: '40%',
-        height: 50,
-        alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: 40,
         justifyContent: 'center',
-        fontWeight: "bold",
-        borderRadius: 15,
-        marginTop: 15,
-        marginLeft: '30%',
+        textAlign: 'center'
+
     },
-    item: {
-        backgroundColor: '#f9c2ff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
-    },
-    title: {
-        fontSize: 32,
+    cartCard: {
+        height: 150,
+        elevation: 15,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#20DC49',
+        backgroundColor: "transparent",
+        marginVertical: 10,
+        marginHorizontal: 20,
+        paddingHorizontal: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
     },
 
+    results_style:{
+        
+    }
 
-});
+})

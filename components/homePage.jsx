@@ -2,38 +2,44 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, View, TextInput, FlatList, Image, Button } from 'react-native'
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
-import { Data, Shops } from '../DataAsset/data'
+import { Data, getSelectedStore, Shops } from '../DataAsset/data'
 //import { Button } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-web';
 import { Icon, withBadge } from 'react-native-elements'
-import { useRoute } from '@react-navigation/native';
+import { useRoute} from '@react-navigation/native';
 import PuffLoader from "react-spinners/PuffLoader";
+import { useEffect } from 'react';
 
 let myList = []
 
-const HomePage = ({ navigation }) => {
+const HomePage = ({ navigation}) => {
   const [indexCheck, setIndexCheck] = useState("0");
   const BadgeIcon = withBadge(0)(Icon);
   const [searched, setSearched] = useState([]);
   const [product, setProducts] = useState([]);
   const [loading, setIsLoading] = useState(false);
 
+
   const route = useRoute();
+  
 
   const handleChange = event => {
+    console.log(event.target.value);
     setSearched(event.target.value);
   };
 
   const passData = async () => {
     setIsLoading(true)
-    console.log(route.params.selectLink + searched);
-    await fetch(route.params.selectLink + searched)
+    console.log(getSelectedStore());
+    console.log(getSelectedStore() + searched);
+    await fetch(getSelectedStore() + searched)
       .then(respond => {
         return respond.json()
       })
       .then(data => {
         setIsLoading(false)
         setProducts(data.products)
+     
 
         console.log(data.products);
         navigation.navigate('SearchedResults', { item: data.products })
@@ -41,9 +47,13 @@ const HomePage = ({ navigation }) => {
       })
 
 
-    console.log(route.params.selectLink + searched);
-    console.log('The budget is:', route.params.budget)
+    console.log(getSelectedStore() + searched);
   };
+
+  useEffect(() => {
+      console.log(getSelectedStore());
+    // restoreListFromAsync() 
+  }, [])
 
 
   return (
@@ -59,7 +69,7 @@ const HomePage = ({ navigation }) => {
         <Text style={{ fontSize: 25, color: '#20DC49', fontWeight: 'bold', marginTop: 50, marginLeft: 2 }}>GetEatCheap</Text>
 
         <Icon
-          name="menu"
+          name="profile"
           size={30}
           color='#20DC49'
           style={{ marginBottom: 60, marginRight: 10 }}
@@ -85,14 +95,14 @@ const HomePage = ({ navigation }) => {
       </View>
       : <>
        <View style={styles.searchBar}>
-        <TextInput type="text" placeholder='Search Product' style={styles.searchProduct} onChange={handleChange} />
+        <TextInput type="text"  value={searched} placeholder='Search Product' style={styles.searchProduct} onChange={handleChange} />
         <Icon
           name="search"
           size={25}
           color="black"
           style={{ marginLeft: 80 }}
           onPress={passData}
-          value={searched}
+        
         />
       </View>
 
@@ -132,7 +142,7 @@ const HomePage = ({ navigation }) => {
       </View>
 
       <View style={styles.shops}>
-        <Image source={require('../assets/shoprite.png')} style={{ width: 80, height: 80, marginLeft: 30, borderRadius: 10 }} />
+        <Image source={require('../assets/game.jpg')} style={{ width: 80, height: 80, marginLeft: 30, borderRadius: 10 }} />
         <Image source={require('../assets/picknpay.png')} style={{ width: 80, height: 80, borderRadius: 10 }} />
         <Image source={require('../assets/makro.png')} style={{ width: 80, height: 80, marginRight: 30, borderRadius: 10 }} />
       </View>
@@ -164,6 +174,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1D2D44",
     flex: 1,
     justifyContent: "center",
+    height:'100%'
   },
   nav: {
     width: '100%',

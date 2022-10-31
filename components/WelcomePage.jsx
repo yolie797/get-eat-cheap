@@ -2,6 +2,8 @@ import React, {useState} from 'react'
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
+import { setSelectedStore,setBudgetAmt, setStoreImg } from '../DataAsset/data';
+import { data } from '../DataAsset/data';
 
 const welcomePage = ({navigation}) => {
     const [selected, setSelected] = React.useState("0");
@@ -13,10 +15,14 @@ const welcomePage = ({navigation}) => {
     // ];
 
     const handleClick = event => {
+        setBudgetAmt(budget)
+        setStoreImg(data[selected].img)
         event.preventDefault();
         const selectLink = data[selected].link
+        setSelectedStore(selectLink)
         navigation.navigate('HomePage',{
             selectLink,budget
+
         })
     
         console.log(budget);
@@ -27,12 +33,7 @@ const welcomePage = ({navigation}) => {
     
       };
 
-      const data = [
-        {key:0,value:'Game',link:"http://scraper.mnisivee.com/get-game-products?search="},
-        {key:1,value:'PicknPay',link:"http://scraper.mnisivee.com/get-pnp-products?search="},
-        {key:2,value:'Makro',link:"http://scraper.mnisivee.com/get-makro-products?search="},
-      ];
-  
+     
     return (
         <View style={styles.container}>
             <View style={styles.navigator}>

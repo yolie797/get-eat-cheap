@@ -27,6 +27,7 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <View style={styles.container}>
+     
       <NavigationContainer >
         <Stack.Navigator>
           <Stack.Screen name="Login" component={SignInScreen} options={{headerShown:false}}/>
