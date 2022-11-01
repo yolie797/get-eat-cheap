@@ -2,40 +2,32 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, SafeAreaVi
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign } from 'react-native-vector-icons';
-import { Data } from '../DataAsset/data';
+import { Data, removeItemProduct } from '../DataAsset/data';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getBudget, getSelectedList, getStoreImg } from '../DataAsset/data';
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { getBudget, getSelectedList, getStoreImg  } from '../DataAsset/data';
+import { MaterialIcons } from '@expo/vector-icons';
 // import img1 from '../assets/break.jpg'
 // import img2 from '../assets/maize.jpg'
 // import img3 from '../assets/rice.jpg'
 // import img4 from '../assets/cooking oil.jpg'
+import { getDocs, collection, query, where,addDoc } from 'firebase/firestore';
+import {db, auth } from './config/firebase';
 
 const List = ({ route, navigation }) => {
-    const selectedList = route.params.cartList
     const [list, setList] = useState([])
-
-
+    const listRef = collection(db,"products")
+    const user = auth.currentUser
+    let myList = {}
     const [quantity, setQuantity] = useState(1)
     const imageStore = getStoreImg()
     let budget = 0
     budget = getBudget()
     let totalQuantity = 0;
     let totalPrice = 0;
-    const increment = () => {
-        setQuantity(quantity + 1);
-    }
-    const decrement = () => {
-        setQuantity(quantity - 1);
-    }
-    const removeItem = async () => {
-        try {
-            await AsyncStorage.removeItem('@storage_Key');
-            console.log('Data removed')
-        }
-        catch (exception) {
-            console.log(exception)
-        }
+
+    const removeItem = async (selectedItem) => {
+        setList(list.filter(item => item !== selectedItem))
+        removeItemProduct(selectedItem)
 
     }
     const addQtyProduct = async (product, selectedQty, selectedIndex) => {
@@ -45,7 +37,6 @@ const List = ({ route, navigation }) => {
         setList(current => current.map((obj, i) => i === selectedIndex
             ? { ...obj, value: product, qty: newqty }
             : obj))
-
     }
 
     const removeQtyProduct = async (product, selectedQty, selectedIndex) => {
@@ -58,25 +49,18 @@ const List = ({ route, navigation }) => {
     }
 
     useEffect(() => {
-        getData().then((res) => {
-            // shoppingList.push(res)
-
-            console.log('====================================');
-            console.log(res);
-            setList(res)
-
-            console.log('====================================');
-        })
-        console.log('====================================');
-        console.log(selectedList);
-        console.log('====================================');
+        // getData()
+        myList = getSelectedList()
+        console.log(myList);
+        setList(myList)
         // showList = shoppingList[0]
         // console.log(showList);
     }, [])
+
     const getData = async () => {
+        setList(getSelectedList())
         try {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
-
             return jsonValue != null ? JSON.parse(jsonValue) : null;
         } catch (e) {
             // error reading value
@@ -93,24 +77,40 @@ const List = ({ route, navigation }) => {
         }, 0)
     }
 
+    const saveList = async() =>{
+        if(user !==""){
+            if(list !== null){
+                try {
+                    const docRef = await addDoc(listRef, {
+                      list, 
+                      email:user.email
+                    });
+                    console.log("Document written with ID: ", docRef.id);
+                  } catch (e) {
+                    console.error("Error adding document: ", e);
+                  } 
+            }
+        }
+    }
+
     const ListItem = ({ item, index }) => {
         return (
             <View>
                 <View style={styles.cartCard}>
-                <AntDesign style={{padding:10}}
-                                name='delete'
-                                size={20}
-                                color={'#20DC49'}
-                                onPress={removeItem}
-                            />
-                     {/* <MaterialIcons onPress={removeItem} name="delete-outline" size={24} color="#20DC49" /> */}
+                    <AntDesign style={{ padding: 10 }}
+                        name='delete'
+                        size={20}
+                        color={'#20DC49'}
+                        onPress={() => removeItem(item)}
+                    />
+                    {/* <MaterialIcons onPress={removeItem} name="delete-outline" size={24} color="#20DC49" /> */}
                     <Image source={item.value.image} style={{ height: 80, width: 80 }} />
                     <View style={{ marginLeft: 40, width: 70, height: 40, alignItems: 'center', backgroundColor: '#33517B' }}>
                         <View style={styles.listView2}>
                             <AntDesign name="minuscircleo" size={16} color="#20DC49" onPress={() => removeQtyProduct(item.value, item.qty, index)} />
-                            <Text style={{ fontWeight: 'bold', fontSize: 18,padding:5 }}>{item.qty}</Text>
+                            <Text style={{ fontWeight: 'bold', fontSize: 18, padding: 5 }}>{item.qty}</Text>
                             <AntDesign name="pluscircleo" size={16} color="#20DC49" marginLeft={10} onPress={() => addQtyProduct(item.value, item.qty, index)} />
-                           
+
                         </View>
                     </View>
                     <View
@@ -150,9 +150,9 @@ const List = ({ route, navigation }) => {
                 <Text style={styles.searchTxt}>List</Text>
                 <View style={styles.rightLine}></View>
             </View>
-           
+
             <Image source={imageStore} style={{ width: 150, height: 80, alignSelf: 'center', marginTop: 20 }} />
-           {/* <View style={styles.results_style}>
+            {/* <View style={styles.results_style}>
            <Text style={{ color: '#20DC49' }}>Total Quantity: {totalQuantity}</Text>
                 <Text style={{ color: '#20DC49' }}>Total Price: {totalPrice.toFixed(2)}</Text>
                 <Text style={{ color: '#20DC49' }}>Budget:{budget}</Text>
@@ -161,6 +161,23 @@ const List = ({ route, navigation }) => {
                     : <Text style={{ color: '#20DC49' }}>In Budget</Text>
                 }
            </View> */}
+            <View style={{ flexDirection: 'row', backgroundColor: '#33517B', borderRadius: 15, padding: 15, margin: 15 }} >
+                <View style={{ alignContent: 'center', flexDirection: 'row', justifyContent: 'space-evenly', display:'flex' }}>
+                    <View style={{flex:2}}>
+                        <Text style={{ color: '#fff' }}>Total Items On your list: {totalQuantity}</Text>
+                        <Text style={{ color: '#fff' }}>Total Price : R<span style={{ color: '#fff' }}>{totalPrice.toFixed(2)}</span> </Text>
+                        <Text style={{ color: '#fff' }}>Your Budget is :R<span style={{ color: '#fff' }}>{budget}</span></Text>
+                    </View>
+                    <View style={{justifyContent:'flex-end', flex:1, width:150}}>
+                        {(totalPrice > budget)
+                            ? <View style={{ backgroundColor: '#FFBDBA', padding: 5, textAlign: 'center' }}><Text style={{ color: 'red' }}>You are Out Of Budget </Text></View>
+                            : <View style={{ backgroundColor: '#C6F4C8', padding: 5, textAlign: 'center' }}><Text style={{ color: 'green' }}>You are In Budget</Text></View>
+                        }
+                    </View>
+
+                </View>
+
+            </View>
             <ScrollView>
                 <View style={{ marginBottom: 50 }}>
 
@@ -171,16 +188,11 @@ const List = ({ route, navigation }) => {
                     />
                 </View>
             </ScrollView>
+
             <View>
-                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Total Quantity: {totalQuantity}</Text>
-                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Total Price: {totalPrice.toFixed(2)}</Text>
-                <Text style={{ color: '#20DC49',fontWeight:'bold',fontSize:20 }}>Budget:{budget}</Text>
-                {(totalPrice > budget)
-                    ? <Text style={{ color: 'red' }}>Out Of Budget</Text>
-                    : <Text style={{ color: '#20DC49' }}>In Budget</Text>
-                }
-                <TouchableOpacity style={styles.checkBtn}>Download</TouchableOpacity>
+                <TouchableOpacity onPress={() =>saveList()} style={styles.checkBtn2}>Save</TouchableOpacity>
             </View>
+ 
 
         </View>
     )
@@ -270,10 +282,23 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         backgroundColor: '#20DC49',
         alignSelf: 'center',
-        marginTop: 40,
+        marginTop: 20,
         justifyContent: 'center',
         textAlign: 'center'
 
+    },
+    checkBtn2: {
+        height: 60,
+        width: 150,
+        borderWidth: 2,
+        borderColor: '#20DC49',
+        borderRadius: 5,
+        backgroundColor: '#20DC49',
+        alignSelf: 'center',
+        marginTop: 20,
+        justifyContent: 'center',
+        textAlign: 'center',
+        marginLeft: 60
     },
     cartCard: {
         height: 150,
@@ -289,8 +314,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 
-    results_style:{
-        
+    results_style: {
+
     }
 
 })

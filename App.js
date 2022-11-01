@@ -19,6 +19,7 @@ import SignInScreen from './components/authScreens/SigninScreen/SignInScreen';
 import SignUpScreen from './components/authScreens/SignUpScreen/SignUpScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import History from './components/history';
 
 
 
@@ -35,6 +36,7 @@ const App = () => {
           <Stack.Screen name='WelcomePage' component={welcomePage} options={{headerShown:false}}/>
           <Stack.Screen name='HomePage' component={HomePage} options={{headerShown:false}}/>
           <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+          <Stack.Screen name="History" component={History} options={{headerShown:false}}/>
           <Stack.Screen name='SearchedResults' component={SearchedResults} options={{headerShown:false}}/>
          <Stack.Screen name='List' component={List} options={{headerShown:false}}/>
         </Stack.Navigator>

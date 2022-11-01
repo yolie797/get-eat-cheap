@@ -6,13 +6,13 @@ import { Data, getSelectedStore, Shops } from '../DataAsset/data'
 //import { Button } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-web';
 import { Icon, withBadge } from 'react-native-elements'
-import { useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import PuffLoader from "react-spinners/PuffLoader";
 import { useEffect } from 'react';
 
 let myList = []
 
-const HomePage = ({ navigation}) => {
+const HomePage = ({ navigation }) => {
   const [indexCheck, setIndexCheck] = useState("0");
   const BadgeIcon = withBadge(0)(Icon);
   const [searched, setSearched] = useState([]);
@@ -21,7 +21,7 @@ const HomePage = ({ navigation}) => {
 
 
   const route = useRoute();
-  
+
 
   const handleChange = event => {
     console.log(event.target.value);
@@ -39,7 +39,7 @@ const HomePage = ({ navigation}) => {
       .then(data => {
         setIsLoading(false)
         setProducts(data.products)
-     
+
 
         console.log(data.products);
         navigation.navigate('SearchedResults', { item: data.products })
@@ -51,7 +51,7 @@ const HomePage = ({ navigation}) => {
   };
 
   useEffect(() => {
-      console.log(getSelectedStore());
+    console.log(getSelectedStore());
     // restoreListFromAsync() 
   }, [])
 
@@ -59,9 +59,10 @@ const HomePage = ({ navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-        <TouchableOpacity onPress={() => navigation.navigate('List',{'cartList':myList})}>
-          <BadgeIcon name="list-alt"
-            size={30}
+        <TouchableOpacity onPress={() => navigation.navigate('WelcomePage'/*'List', { 'cartList': myList }*/)}>
+          <Icon name="west"
+            type='material'
+            size={35}
             color="#20DC49"
             style={{ marginBottom: 60, marginLeft: 10 }}
           />
@@ -69,85 +70,86 @@ const HomePage = ({ navigation}) => {
         <Text style={{ fontSize: 25, color: '#20DC49', fontWeight: 'bold', marginTop: 50, marginLeft: 2 }}>GetEatCheap</Text>
 
         <Icon
-          name="profile"
+          name="person"
+          type='material'
           size={30}
           color='#20DC49'
           style={{ marginBottom: 60, marginRight: 10 }}
-          onPress={()=>navigation.navigate('Profile')}
+          onPress={() => navigation.navigate('Profile')}
         />
       </View>
 
       <View style={styles.borderLine}></View>
 
       {loading
-      ?<View style={{height:'70%', alignItems:'center',justifyContent:'center'}}>
-         <PuffLoader
-        color={"#20DC49"}
-        loading={loading}
-        // cssOverride={override}
-        size={200}
-        aria-label="Loading Spinner"
-        data-testid="loader"
-      />
-      <Text style={{ fontSize: 15, color: '#fff',marginTop:100 }}>
-          Please wait while we find the best products for you.</Text>
-      
-      </View>
-      : <>
-       <View style={styles.searchBar}>
-        <TextInput type="text"  value={searched} placeholder='Search Product' style={styles.searchProduct} onChange={handleChange} />
-        <Icon
-          name="search"
-          size={25}
-          color="black"
-          style={{ marginLeft: 80 }}
-          onPress={passData}
-        
-        />
-      </View>
+        ? <View style={{ height: '70%', alignItems: 'center', justifyContent: 'center' }}>
+          <PuffLoader
+            color={"#20DC49"}
+            loading={loading}
+            // cssOverride={override}
+            size={200}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+          <Text style={{ fontSize: 15, color: '#fff', marginTop: 100 }}>
+            Please wait while we find the best products for you.</Text>
 
-      <View style={styles.searchTab}>
-        <View style={styles.leftLine}></View>
-        <Text style={{ color: '#20DC49' }}>Popular Searches</Text>
-        <View style={styles.rightLine}></View>
-      </View>
+        </View>
+        : <>
+          <View style={styles.searchBar}>
+            <TextInput type="text" value={searched} placeholder='Search Product' style={styles.searchProduct} onChange={handleChange} />
+            <Icon
+              name="search"
+              size={25}
+              color="black"
+              style={{ marginLeft: 80 }}
+              onPress={passData}
 
+            />
+          </View>
 
-      <View style={{ marginTop: 15, marginBottom: 15 }}>
-        <FlatList
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          style={{ marginTop: 50, marginLeft: 60, marginRight: 60 }}
-          data={Data}
-          keyExtractor={(item) => item.id}
-          extraData={indexCheck}
-          renderItem={({ item, index }) => (
-            <View style={styles.popularPics}>
-              <Image
-                style={{ height: 70, width: 70, borderRadius: 20, backgroundColor: '#fff', marginLeft: 10 }}
-                source={item.image}
-              />
+          <View style={styles.searchTab}>
+            <View style={styles.leftLine}></View>
+            <Text style={{ color: '#20DC49' }}>Popular Searches</Text>
+            <View style={styles.rightLine}></View>
+          </View>
 
 
-            </View>
+          <View style={{ marginTop: 15, marginBottom: 15 }}>
+            <FlatList
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{ marginTop: 50, marginLeft: 60, marginRight: 60 }}
+              data={Data}
+              keyExtractor={(item) => item.id}
+              extraData={indexCheck}
+              renderItem={({ item, index }) => (
+                <View style={styles.popularPics}>
+                  <Image
+                    style={{ height: 70, width: 70, borderRadius: 20, backgroundColor: '#fff', marginLeft: 10 }}
+                    source={item.image}
+                  />
 
-          )}
-        />
-      </View>
 
-      <View style={styles.searchTab2}>
-        <View style={styles.leftLine2}></View>
-        <Text style={{ color: '#20DC49' }}>Shops</Text>
-        <View style={styles.rightLine2}></View>
-      </View>
+                </View>
 
-      <View style={styles.shops}>
-        <Image source={require('../assets/game.jpg')} style={{ width: 80, height: 80, marginLeft: 30, borderRadius: 10 }} />
-        <Image source={require('../assets/picknpay.png')} style={{ width: 80, height: 80, borderRadius: 10 }} />
-        <Image source={require('../assets/makro.png')} style={{ width: 80, height: 80, marginRight: 30, borderRadius: 10 }} />
-      </View>
-      </> 
-      
+              )}
+            />
+          </View>
+
+          <View style={styles.searchTab2}>
+            <View style={styles.leftLine2}></View>
+            <Text style={{ color: '#20DC49' }}>Shops</Text>
+            <View style={styles.rightLine2}></View>
+          </View>
+
+          <View style={styles.shops}>
+            <Image source={require('../assets/game.jpg')} style={{ width: 100, height: 80, borderRadius: 10 }} />
+            <Image source={require('../assets/picknpay.png')} style={{ width: 100, height: 80, borderRadius: 10 }} />
+            <Image source={require('../assets/makro.png')} style={{ width: 100, height: 80, borderRadius: 10 }} />
+          </View>
+        </>
+
       }
 
       <View style={styles.bottomLine}></View>
@@ -174,7 +176,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1D2D44",
     flex: 1,
     justifyContent: "center",
-    height:'100%'
+    height: '100%'
   },
   nav: {
     width: '100%',
@@ -243,7 +245,7 @@ const styles = StyleSheet.create({
   shops: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginTop: 70,
     marginBottom: 20
   },

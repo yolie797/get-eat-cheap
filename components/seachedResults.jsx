@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity, Image, FlatList } from 'react-native'
+import { StyleSheet, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity, Image, FlatList } from 'react-native'
 import ListItemSwipeable from 'react-native-elements/dist/list/ListItemSwipeable';
 //import Icon from 'react-native-vector-icons/FontAwesome';
 import { milk, milk2, Shops, Data, getItemCount } from '../DataAsset/data';
@@ -17,12 +17,12 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
   const [checked, setChecked] = useState(false);
   const theChecked = [];
   const [qty, setQTY] = useState();
-  const [itemCount,setItemCount] = useState(0)
+  const [itemCount, setItemCount] = useState(0)
   const BadgeIcon = withBadge(itemCount)(Icon);
 
   useEffect(() => {
     setData(route.params.item)
-    
+
     console.log(setItemCount(getItemCount()));
     // restoreListFromAsync() 
   }, [])
@@ -33,9 +33,9 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
     try {
       // const newItem = [ value , ...listItem];
       await restoreListFromAsync().then(() => {
-        
-        myList.push({value, qty:1})
-        setSelectedList({value,qty:1})
+
+        myList.push({ value, qty: 1 })
+        setSelectedList({ value, qty: 1 })
         setItemCount(getItemCount())
         const jsonValue = JSON.stringify(getSelectedList())
         AsyncStorage.setItem('@storage_Key', jsonValue).then({
@@ -82,6 +82,27 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
   }
 
 
+  const Item = ({ itemData }) => (
+
+    <View style={styles.popularPics} >
+      <Image
+        style={{ height: '10vh', width: '30vw' }}
+        source={itemData.image}
+      />
+      <View>
+        <Text style={styles.txt}>{itemData.name}</Text>
+      </View>
+      <View>
+        <Text style={styles.txt}>R{itemData.price}</Text>
+      </View>
+      <TouchableOpacity onPress={() => storeData(itemData)} style={styles.AddBtn}>
+        <Text style={{ color: '#fff' }}>+</Text>
+      </TouchableOpacity>
+    </View>
+
+
+  );
+  const renderItem = ({ item }) => <Item itemData={item} />;
 
   return (
     <View style={styles.container}>
@@ -94,51 +115,28 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
         />
 
         <Text style={styles.searchTxt}>Searched Results</Text>
-        <TouchableOpacity style={{ marginTop: 20, marginRight: 20 }}
-          onPress={() => navigation.navigate('List', { 'cartList': myList })}>
-          <BadgeIcon name="list-alt"
-            size={30}
-            color="#20DC49"
-           
-            
-
-          />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity style={{ marginTop: 20, marginRight: 20 }}
+            onPress={() => navigation.navigate('List')}>
+            <View>
+              <BadgeIcon name="list-alt"
+                size={30}
+                color="#20DC49"
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{ marginTop: -10 }}>
         <View style={styles.leftLine}></View>
         <View style={styles.rightLine}></View>
       </View>
-      <TouchableOpacity onPress={() => clearStorage()} style={{height:50,width:80,borderWidth:2,borderRadius:10,backgroundColor:'#20DC49',textAlign:'center'}}>
-        <Text style={{ color: 'black',fontWeight:'bold' }}>Clear Cart</Text>
-      </TouchableOpacity>
-      <ScrollView >
-        <View
-          style={{ flexDirection: 'column',display:'flex',alignSelf:'center', height: '60vh',  marginTop: 20, marginBottom: 40,}}>
-          {data.map((item, index) => {
-            return <View style={styles.popularPics} key={index}>
-              <Image
-                style={{ height: '10vh', width: '30vw' }}
-                source={item.image}
-              />
-              <View>
-                <Text style={styles.txt}>{item.name}</Text>
-              </View>
-              <View>
-                <Text style={styles.txt}>R{item.price}</Text>
-              </View>
-              <TouchableOpacity onPress={() => storeData(item)} style={styles.AddBtn}>
-                <Text style={{ color: '#fff' }}>+</Text>
-              </TouchableOpacity>
-            </View>
+      <ScrollView>
 
-          })}
-
-
-
-        </View>
+        <SafeAreaView style={styles.content}>
+          <FlatList numColumns={2} data={data} renderItem={renderItem} keyExtractor={item => item.id} />
+        </SafeAreaView>
       </ScrollView>
-
     </View>
   )
 }
@@ -150,8 +148,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#1D2D44",
     flex: 1,
     //justifyContent: "center",
-    height: '100%',
-    width: '100%',
+    // height: '100%',
+    // width: '100%',
+
   },
   nav: {
     alignItems: 'center',
@@ -183,9 +182,9 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     borderRadius: 15,
     // justifyContent: 'center',
-    position:'absolute',
-    bottom:0,
-    right:0
+    position: 'absolute',
+    bottom: 0,
+    right: 0
 
   },
   popularPics: {
@@ -195,12 +194,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     borderWidth: 1,
     borderColor: 'grey',
-    alignContent:'center',
-    display:'flex',
-    justifyContent:'center',
-    alignItems:'center',
+    alignContent: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     // padding:10,
-    margin:10
+    margin: 10
 
   },
   txt: {
@@ -208,5 +207,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     fontSize: 10,
     margin: 10
+  },
+  content: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginLeft: 20,
+    marginTop: 20
+
   }
 })

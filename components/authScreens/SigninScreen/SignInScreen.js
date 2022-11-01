@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import CustomInput from '../../CustomInput/CustomInput'
 import CustomButton from '../../CustomButton/CustomButton';
 import GoogleButton from 'react-google-button'
-import basket from '../../../assets/trolley.jpg'
+import basket from '../../../assets/image.png'
 import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { auth, db } from "../../config/firebase";
 import { collection, addDoc } from "firebase/firestore"
@@ -55,7 +55,8 @@ const SignInScreen = ({ navigation }) => {
   return (
     <View style={styles.root}>
       <View>
-        <Image source={basket} style={{ width: 200, height: 180 }} />
+        <Image source={basket} style={{ width: 230, height: 230,marginBottom:20,borderBottomRightRadius:40,
+        borderBottomLeftRadius:70 }} />
       </View>
       <View>
         <Text style={{ color: '#20DC49', fontSize: 30, fontWeight: 'bold' }}>Welcome Back</Text>

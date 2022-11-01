@@ -72,4 +72,13 @@ export function getSelectedList(){
 export function getItemCount(){
     return selectedList.length
 }
+
+export function removeItemProduct(item) {
+    var index = selectedList.indexOf(item)
+    if(index !== -1){
+        selectedList.splice(index,1)
+        console.log("removed");
+
+    }
+}
 ;

@@ -13,14 +13,16 @@ const Profile =({navigation})=>{
     const [email, setEmail] = useState('');
 
 const [profile, setProfile] = useState({});
-const productsCollection = collection(db, 'profiles')
+const [list, setList] = useState([]);
+const profileCollection = collection(db, 'profiles')
+const productsCollection = collection(db, 'products')
 
   const getProfile = async() =>{
-      const q = query(productsCollection, where('email', '==', auth.currentUser.email));
+      const q = query(profileCollection, where('email', '==', auth.currentUser.email));
       const querySnapShots = await getDocs(q);
-  
+
       let tmpProfile = [];
-  
+
       querySnapShots.forEach(
       (profile) => {
           console.log(profile.data());
@@ -33,9 +35,28 @@ const productsCollection = collection(db, 'profiles')
       setProfile(tmpProfile);
   }
 
+  const getSavedList = async() =>{
+    const q = query(productsCollection, where('email', '==', auth.currentUser.email));
+    const querySnapShots = await getDocs(q);
+
+    let tmpProd = [];
+
+    querySnapShots.forEach(
+    (product) => {
+        console.log(product.data().list);
+    //   tmpProfile.push({...profile.data(), id: profile.id});
+    tmpProd.push(product.data().list) ;
+     
+    }
+    );
+
+    setList(tmpProd);
+  } 
+
   useEffect(()=>{
       // console.log( auth.currentUser.email);
       getProfile();
+      getSavedList()
     },[])
 
     useEffect(()=>{
@@ -58,7 +79,7 @@ return(
             <Icon style={styles.listIcon} name="close" size={20} color="#20DC49"
             onPress={()=>navigation.navigate('HomePage')}/>
             <TouchableOpacity style={styles.logout} onPress={logout}>Logout</TouchableOpacity>
-            <Text style={styles.textProfile}>Profile</Text>
+            {/* <Text style={styles.textProfile}>Profile</Text> */}
         </View>
         <View>
             <TouchableOpacity>
@@ -73,20 +94,20 @@ return(
         <View>
             <View style={styles.inputs}>
                 <Text style={styles.textProfile}> {profile.firstname} </Text>
-                <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/>
+                {/* <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/> */}
             </View>
             <View style={styles.inputs}>
                 <Text style={styles.textProfile}> {profile.lastname} </Text>
-                <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/>
+                {/* <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/> */}
             </View>
            <View style={styles.inputs}>
                 <Text style={styles.textProfile}>{profile.email}</Text>
-                <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/>
+                {/* <Icon style={styles.editIcon} name="edit" size={20} color="#fff"/> */}
            </View>
             
         </View>
         <View style={styles.btnHistory}>
-            <TouchableOpacity style={styles.historyBtn}>View History</TouchableOpacity>
+            <TouchableOpacity style={styles.historyBtn} onPress={()=>navigation.navigate('History',{myList :list})}>View History</TouchableOpacity>
         </View>
     </View>
 )
