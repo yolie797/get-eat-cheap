@@ -1,37 +1,24 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity, Image, FlatList } from 'react-native'
-import ListItemSwipeable from 'react-native-elements/dist/list/ListItemSwipeable';
-//import Icon from 'react-native-vector-icons/FontAwesome';
-import { milk, milk2, Shops, Data, getItemCount } from '../DataAsset/data';
-import { CheckBox } from 'react-native-elements';
+import { StyleSheet, SafeAreaView, Text, View, TouchableOpacity, Image, FlatList } from 'react-native'
+import { getItemCount } from '../DataAsset/data';
 import { Icon, withBadge } from 'react-native-elements'
-import { Pressable } from 'react-native';
 import { ScrollView } from 'react-native-web';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getSelectedList, setSelectedList } from '../DataAsset/data';
 
 const SearchedResults = ({ route, navigation, searched, myList }) => {
-  const [result, setResult] = useState('');
-  const [indexCheck, setIndexCheck] = useState("0");
   const [data, setData] = useState([]);
-  const [checked, setChecked] = useState(false);
-  const theChecked = [];
-  const [qty, setQTY] = useState();
   const [itemCount, setItemCount] = useState(0)
   const BadgeIcon = withBadge(itemCount)(Icon);
 
   useEffect(() => {
     setData(route.params.item)
-
-    console.log(setItemCount(getItemCount()));
-    // restoreListFromAsync() 
   }, [])
 
   const storeData = async (value) => {
 
 
     try {
-      // const newItem = [ value , ...listItem];
       await restoreListFromAsync().then(() => {
 
         myList.push({ value, qty: 1 })
@@ -45,8 +32,8 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
 
 
     } catch (e) {
-      // saving error
-      console.log(e);
+      
+     alert('Error occured')
     }
   }
   const restoreListFromAsync = async () => {
@@ -63,7 +50,6 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
 
         myList = parsedList
 
-        // setListItem(parsedList);
       })
       .catch(err => {
         console.warn('Error restoring todos from async');
@@ -71,15 +57,6 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
       });
   };
 
-  const clearStorage = async () => {
-    try {
-      await AsyncStorage.clear()
-    } catch (e) {
-      // clear error
-    }
-
-    console.log('Done.')
-  }
 
 
   const Item = ({ itemData }) => (
@@ -107,7 +84,7 @@ const SearchedResults = ({ route, navigation, searched, myList }) => {
   return (
     <View style={styles.container}>
       <View style={styles.nav}>
-        <Icon name="home"
+        <Icon name="search"
           size={25}
           color="#20DC49"
           style={{ marginLeft: 20, marginTop: 20 }}
@@ -147,10 +124,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#1D2D44",
     flex: 1,
-    //justifyContent: "center",
-    // height: '100%',
-    // width: '100%',
-
   },
   nav: {
     alignItems: 'center',
@@ -179,9 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#20DC49',
     height: 20,
     width: 20,
-    // alignItems: 'center',
     borderRadius: 15,
-    // justifyContent: 'center',
     position: 'absolute',
     bottom: 0,
     right: 0
@@ -189,7 +160,6 @@ const styles = StyleSheet.create({
   },
   popularPics: {
     width: "40vw",
-    // marginLeft: '1vw',
     height: '21vh',
     textAlign: 'center',
     borderWidth: 1,
@@ -198,7 +168,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    // padding:10,
     margin: 10
 
   },

@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectList from 'react-native-dropdown-select-list'
 import { setSelectedStore,setBudgetAmt, setStoreImg } from '../DataAsset/data';
@@ -8,11 +8,7 @@ import { data } from '../DataAsset/data';
 const welcomePage = ({navigation}) => {
     const [selected, setSelected] = React.useState("0");
     const [budget, setBudget] = useState(0)
-    // const data = [
-    //     { key: '1', value: 'ShopRite' },
-    //     { key: '2', value: 'PicknPay' },
-    //     { key: '3', value: 'Spar' },
-    // ];
+
 
     const handleClick = event => {
         setBudgetAmt(budget)
@@ -25,7 +21,6 @@ const welcomePage = ({navigation}) => {
 
         })
     
-        console.log(budget);
       };
 
       const handleChange = event => {
@@ -50,7 +45,6 @@ const welcomePage = ({navigation}) => {
                     dropdownStyles={{ backgroundColor: '#fff' }} placeholder="Select Shop" data={data} setSelected={setSelected} />
             </View>
             <View style={styles.btnCont}>
-                {/*<Button title="Proceed" style={styles.proceedBtn}></Button> */}
                 <TouchableOpacity style={styles.proceedBtn} onPress={handleClick} title='Proceed'>Proceed</TouchableOpacity>
             </View>
             <View style={styles.bottomLn}></View>
@@ -73,7 +67,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
-        //marginTop: '80%',
         backgroundColor:'#1D2D44',
 
 

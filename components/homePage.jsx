@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, FlatList, Image, Button } from 'react-native'
-//import Icon from 'react-native-vector-icons/FontAwesome';
-import SelectList from 'react-native-dropdown-select-list'
-import { Data, getSelectedStore, Shops } from '../DataAsset/data'
-//import { Button } from 'react-native-paper';
+import { StyleSheet, Text, View, TextInput, FlatList, Image} from 'react-native'
+import { Data, getSelectedStore} from '../DataAsset/data'
 import { TouchableOpacity } from 'react-native-web';
 import { Icon, withBadge } from 'react-native-elements'
 import { useRoute } from '@react-navigation/native';
 import PuffLoader from "react-spinners/PuffLoader";
 import { useEffect } from 'react';
 
-let myList = []
 
 const HomePage = ({ navigation }) => {
   const [indexCheck, setIndexCheck] = useState("0");
@@ -20,18 +16,13 @@ const HomePage = ({ navigation }) => {
   const [loading, setIsLoading] = useState(false);
 
 
-  const route = useRoute();
-
 
   const handleChange = event => {
-    console.log(event.target.value);
     setSearched(event.target.value);
   };
 
   const passData = async () => {
     setIsLoading(true)
-    console.log(getSelectedStore());
-    console.log(getSelectedStore() + searched);
     await fetch(getSelectedStore() + searched)
       .then(respond => {
         return respond.json()
@@ -40,19 +31,14 @@ const HomePage = ({ navigation }) => {
         setIsLoading(false)
         setProducts(data.products)
 
-
-        console.log(data.products);
         navigation.navigate('SearchedResults', { item: data.products })
 
       })
 
-
-    console.log(getSelectedStore() + searched);
   };
 
   useEffect(() => {
-    console.log(getSelectedStore());
-    // restoreListFromAsync() 
+    
   }, [])
 
 
@@ -86,7 +72,6 @@ const HomePage = ({ navigation }) => {
           <PuffLoader
             color={"#20DC49"}
             loading={loading}
-            // cssOverride={override}
             size={200}
             aria-label="Loading Spinner"
             data-testid="loader"
@@ -181,7 +166,7 @@ const styles = StyleSheet.create({
   nav: {
     width: '100%',
     height: '10%',
-    marginTop: -50,
+    marginTop: -30,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -208,12 +193,12 @@ const styles = StyleSheet.create({
   leftLine: {
     borderTopWidth: 1,
     borderTopColor: '#fff',
-    width: 150,
+    width: 140,
   },
   rightLine: {
     borderTopWidth: 1,
     borderTopColor: '#fff',
-    width: 150,
+    width: 140,
   },
   searchTab: {
     alignItems: 'center',

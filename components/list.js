@@ -1,16 +1,11 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, SafeAreaView, FlatList } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AntDesign } from 'react-native-vector-icons';
-import { Data, removeItemProduct } from '../DataAsset/data';
+import {removeItemProduct } from '../DataAsset/data';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getBudget, getSelectedList, getStoreImg  } from '../DataAsset/data';
-import { MaterialIcons } from '@expo/vector-icons';
-// import img1 from '../assets/break.jpg'
-// import img2 from '../assets/maize.jpg'
-// import img3 from '../assets/rice.jpg'
-// import img4 from '../assets/cooking oil.jpg'
-import { getDocs, collection, query, where,addDoc } from 'firebase/firestore';
+import { collection,addDoc } from 'firebase/firestore';
 import {db, auth } from './config/firebase';
 
 const List = ({ route, navigation }) => {
@@ -32,7 +27,6 @@ const List = ({ route, navigation }) => {
     }
     const addQtyProduct = async (product, selectedQty, selectedIndex) => {
         let newqty = selectedQty + 1
-        console.log(selectedQty);
 
         setList(current => current.map((obj, i) => i === selectedIndex
             ? { ...obj, value: product, qty: newqty }
@@ -41,7 +35,6 @@ const List = ({ route, navigation }) => {
 
     const removeQtyProduct = async (product, selectedQty, selectedIndex) => {
         let newqty = selectedQty - 1
-        console.log(selectedQty);
 
         setList(current => current.map((obj, i) => i === selectedIndex
             ? { ...obj, value: product, qty: newqty }
@@ -49,12 +42,9 @@ const List = ({ route, navigation }) => {
     }
 
     useEffect(() => {
-        // getData()
         myList = getSelectedList()
-        console.log(myList);
         setList(myList)
-        // showList = shoppingList[0]
-        // console.log(showList);
+        
     }, [])
 
     const getData = async () => {
@@ -63,12 +53,11 @@ const List = ({ route, navigation }) => {
             const jsonValue = await AsyncStorage.getItem('@storage_Key')
             return jsonValue != null ? JSON.parse(jsonValue) : null;
         } catch (e) {
-            // error reading value
+           alert('error occured')
         }
     }
 
     if (list != null) {
-        console.log(list);
         list.forEach((item) => {
 
             totalQuantity += item.qty;
@@ -85,9 +74,9 @@ const List = ({ route, navigation }) => {
                       list, 
                       email:user.email
                     });
-                    console.log("Document written with ID: ", docRef.id);
+                    alert('Data Saved')
                   } catch (e) {
-                    console.error("Error adding document: ", e);
+                    alert('Error saving')
                   } 
             }
         }
@@ -103,7 +92,6 @@ const List = ({ route, navigation }) => {
                         color={'#20DC49'}
                         onPress={() => removeItem(item)}
                     />
-                    {/* <MaterialIcons onPress={removeItem} name="delete-outline" size={24} color="#20DC49" /> */}
                     <Image source={item.value.image} style={{ height: 80, width: 80 }} />
                     <View style={{ marginLeft: 40, width: 70, height: 40, alignItems: 'center', backgroundColor: '#33517B' }}>
                         <View style={styles.listView2}>
@@ -129,7 +117,6 @@ const List = ({ route, navigation }) => {
             </View>
         )
     };
-    // const renderItem = ({ item }) => <ListItem title={item.name} price={item.price} image={item.image} />;
 
     return (
 
@@ -152,15 +139,6 @@ const List = ({ route, navigation }) => {
             </View>
 
             <Image source={imageStore} style={{ width: 150, height: 80, alignSelf: 'center', marginTop: 20 }} />
-            {/* <View style={styles.results_style}>
-           <Text style={{ color: '#20DC49' }}>Total Quantity: {totalQuantity}</Text>
-                <Text style={{ color: '#20DC49' }}>Total Price: {totalPrice.toFixed(2)}</Text>
-                <Text style={{ color: '#20DC49' }}>Budget:{budget}</Text>
-                {(totalPrice > budget)
-                    ? <Text style={{ color: '#20DC49' }}>Out of budget</Text>
-                    : <Text style={{ color: '#20DC49' }}>In Budget</Text>
-                }
-           </View> */}
             <View style={{ flexDirection: 'row', backgroundColor: '#33517B', borderRadius: 15, padding: 15, margin: 15 }} >
                 <View style={{ alignContent: 'center', flexDirection: 'row', justifyContent: 'space-evenly', display:'flex' }}>
                     <View style={{flex:2}}>
@@ -216,7 +194,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#20DC49',
         fontWeight: 'bold',
-        //marginTop: 140,
     },
     leftLine: {
         borderTopWidth: 1,
@@ -249,8 +226,6 @@ const styles = StyleSheet.create({
     },
 
     listView2: {
-        //display: 'flex', flexDirection: 'row', alignItems: 'center',
-        // alignContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -298,7 +273,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         justifyContent: 'center',
         textAlign: 'center',
-        marginLeft: 60
+        marginBottom:40
     },
     cartCard: {
         height: 150,

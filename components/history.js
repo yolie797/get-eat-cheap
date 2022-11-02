@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { StyleSheet, SafeAreaView, Text, View, TextInput, Button, TouchableOpacity, Image, FlatList, ScrollView } from 'react-native'
-import { Icon, withBadge } from 'react-native-elements'
+import { StyleSheet, SafeAreaView, Text, View,Image, FlatList, ScrollView } from 'react-native'
+import { Icon} from 'react-native-elements'
 
 const History = ({ navigation, route, list }) => {
     const { myList } = route.params;
@@ -30,24 +30,12 @@ const History = ({ navigation, route, list }) => {
             )
 
             }
-            {/* <Image
-            style={{ height: '10vh', width: '30vw' }}
-            source={itemData.image}
-          />
-          <View>
-            <Text style={styles.txt}>{itemData.name}</Text>
-          </View>
-          <View>
-            <Text style={styles.txt}>R{itemData.price}</Text>
-          </View>
-          <TouchableOpacity onPress={() => storeData(itemData)} style={styles.AddBtn}>
-            <Text style={{ color: '#fff' }}>+</Text>
-          </TouchableOpacity> */}
+           
         </View>
 
 
     );
-    console.log(myList);
+    
     return (
         <View style={styles.container}>
             <View style={styles.nav}>
@@ -60,15 +48,7 @@ const History = ({ navigation, route, list }) => {
 
                 <Text style={styles.searchTxt}>History</Text>
                 <View>
-                    {/* <TouchableOpacity style={{ marginTop: 20, marginRight: 20 }}
-                        onPress={() => navigation.navigate('List')}>
-                        <View>
-                            <Icon name="list-alt"
-                                size={30}
-                                color="#20DC49"
-                            />
-                        </View>
-                    </TouchableOpacity> */}
+        
                 </View>
             </View>
             <View style={{ marginTop: -10 }}>
@@ -95,7 +75,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#1D2D44",
         flex: 1,
         justifyContent: "center",
-        //height: '100%'
+       
     },
     nav: {
         alignItems: 'center',
